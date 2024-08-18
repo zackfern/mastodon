@@ -87,4 +87,17 @@ RSpec.describe ReblogService do
       expect(ActivityPub::DistributionWorker).to have_received(:perform_async)
     end
   end
+
+  context 'when a status has a language' do
+    subject { described_class.new }
+
+    let(:original_status) { Fabricate(:status) }
+
+    it 'the reblogged status persists it' do
+      expect(original_status.language).to_not be_nil
+
+      reblogged_status = subject.call(alice, original_status)
+      expect(reblogged_status.language).to eq(original_status.language)
+    end
+  end
 end
